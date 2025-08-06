@@ -14,10 +14,16 @@
         <h5 class="text-center font-weight-bold mb-3">Employee Leave Request's Detail</h5>
         <div class="mb-3">
             <div class="row">
-              <div class="col-12">
+              <div class="col-sm-12 col-lg-6">
                 <div class="form-group">
                   <label for="employee_name">Employee Name:</label>
                   <input type="text" name="employee_name" value="{{ $employeeLeaveRequest->employee->name }}" class="form-control-plaintext" readonly>
+                </div>
+              </div>
+              <div class="col-sm-12 col-lg-6">
+                <div class="form-group">
+                  <label for="leave_type">Leave Type:</label>
+                  <input type="text" name="leave_type" id="leave_type" class="form-control-plaintext" readonly value="{{ $employeeLeaveRequest->leave_type }}">
                 </div>
               </div>
             </div>
@@ -54,7 +60,7 @@
             <div class="row">
               <div class="col-sm-12 col-lg-6">
                 <div class="form-group">
-                  <label for="message">Message:</label>
+                  <label for="message">Reason:</label>
                   <input type="text" name="message" id="message" class="form-control-plaintext" readonly value="{{ $employeeLeaveRequest->message }}">
                 </div>
               </div>

@@ -25,9 +25,10 @@ class StoreEmployeeLeaveRequest extends FormRequest
     {
         return [
             'employee_id' => 'exists:employees,id|nullable',
-            'from' => 'date|nullable',
-            'to' => 'date|nullable|after_or_equal:from',
+            'from' => 'required|date',
+            'to' => 'required|date|after_or_equal:from',
             'message' => 'nullable',
+            'leave_type' => 'required|string|in:PTO,Sick,Maternity,Paternity,Marriage,Death,Urgent-Work,Other',
             'comment' => 'nullable',
             'checked_by' => 'nullable|exists:employees,id'
         ];
