@@ -28,7 +28,9 @@ class StoreProfileRequest extends FormRequest
             'name' => 'required',
             'email' => 'required',
             'phone' => 'required|min:11|max:13',
-            'address' => 'required'
+            'address' => 'required',
+            'current_password' => 'nullable|required_with:new_password|string',
+            'new_password' => 'nullable|string|min:8|confirmed',
         ];
     }
 }
