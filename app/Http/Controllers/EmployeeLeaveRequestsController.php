@@ -69,6 +69,7 @@ class EmployeeLeaveRequestsController extends Controller
             'employee_id' => $request->input('employee_id'),
             'from' => $request->input('from'),
             'to' => $request->input('to'),
+            'leave_type' => $request->input('leave_type'),
             'message' => $request->input('message')
         ]);
         
@@ -128,6 +129,7 @@ class EmployeeLeaveRequestsController extends Controller
                 ->update([
                 'from' => $request->input('from'),
                 'to' => $request->input('to'),
+                'leave_type' => $request->input('leave_type'),
                 'message' => $request->input('message')
                 ]);
 
