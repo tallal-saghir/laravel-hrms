@@ -8,6 +8,7 @@ use App\Models\EmployeeDetail;
 use App\Models\Log;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ProfilesController extends Controller
 {
@@ -15,8 +16,8 @@ class ProfilesController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');  
-        
+        $this->middleware('auth');
+
         $this->users = resolve(User::class);
     }
     /**
@@ -86,12 +87,12 @@ class ProfilesController extends Controller
             ->update([
                 'name' => $request->input('name'),
                 'email' => $request->input('email'),
-                ]);
-        
+            ]);
+
         $employee = Employee::whereUserId($user->id)->first();
         $employee->update([
-                    'name' => $request->input('name'),
-                ]);
+            'name' => $request->input('name'),
+        ]);
 
         $updateArray = [
             'name' => $request->input('name'),
@@ -102,6 +103,14 @@ class ProfilesController extends Controller
 
         if ($request->has('profile')) {
             $updateArray["photo"] = $request->file('profile')->store('photos', 'public');
+        }
+        if ($request->filled('current_password') && $request->filled('new_password')) {
+            if (!Hash::check($request->current_password, $user->password)) {
+                return redirect()->back()->withErrors(['current_password' => 'Current password is incorrect']);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
         }
 
         EmployeeDetail::whereEmployeeId($employee->id)->update($updateArray);
