@@ -1,0 +1,15 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class EmploymentType extends Model
+{
+    use HasFactory;
+    public function employeeDetails()
+    {
+        return $this->hasMany(EmployeeDetail::class, 'employment_type_id');
+    }
+}
