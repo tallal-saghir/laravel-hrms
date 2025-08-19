@@ -46,7 +46,7 @@
             <div class="col-sm-12 col-lg-6">
               <div class="form-group">
                 <label for="password">Password:</label>
-                <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" value="{{ old('password') }}" placeholder="Enter password" required>
+                <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" value="{{ old('password') }}" placeholder="Enter password">
               </div>
               @error('password')
               <div class="alert alert-danger">{{ $message }}</div>
@@ -55,7 +55,7 @@
             <div class="col-sm-12 col-lg-6">
               <div class="form-group">
                 <label for="password_confirmation">Confirmation Password:</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{ old('password_confirmation') }}" placeholder="Enter password again" required>
+                <input type="password" name="password_confirmation" id="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror" value="{{ old('password_confirmation') }}" placeholder="Enter password again">
               </div>
               @error('password_confirmation')
               <div class="alert alert-danger">{{ $message }}</div>
@@ -271,7 +271,7 @@
             <div class="col-sm-12 col-lg-6">
               <div class="form-group">
                 <label for="photo">Photo:</label>
-                <input type="file" name="photo" id="photo" class="form-control-file @error('photo') is-invalid @enderror" required>
+                <input type="file" name="photo" id="photo" class="form-control-file @error('photo') is-invalid @enderror">
               </div>
               @error('photo')
               <div class="alert alert-danger">{{ $message }}</div>
@@ -280,7 +280,7 @@
             <div class="col-sm-12 col-lg-6">
               <div class="form-group">
                 <label for="cv">CV:</label>
-                <input type="file" name="cv" id="cv" class="form-control-file @error('cv') is-invalid @enderror" required>
+                <input type="file" name="cv" id="cv" class="form-control-file @error('cv') is-invalid @enderror">
               </div>
               @error('cv')
               <div class="alert alert-danger">{{ $message }}</div>
@@ -320,6 +320,25 @@
 
 
           </div>
+          <div class="row">
+            <div class="col-sm-12 col-lg-6">
+              <div class="form-group">
+                <label for="reporting_to">Reporting To:</label>
+                <select id="reporting_to" class="form-control @error('reporting_to') is-invalid @enderror" name="reporting_to">
+                  <option value="">Choose...</option>
+                  @foreach ($employees as $emp)
+                  <option value="{{ $emp->id }}" {{ $employee->employeeDetail->reporting_to == $emp->id ? 'selected' : '' }}>
+                    {{ $emp->name }}
+                  </option>
+                  @endforeach
+                </select>
+              </div>
+              @error('reporting_to')
+              <div class="alert alert-danger">{{ $message }}</div>
+              @enderror
+            </div>
+
+          </div>
 
 
         </div>
@@ -338,22 +357,22 @@
 @endsection
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('add-phone').addEventListener('click', function () {
-        let wrapper = document.getElementById('phone-wrapper');
-        let newField = `
+    document.getElementById('add-phone').addEventListener('click', function() {
+      let wrapper = document.getElementById('phone-wrapper');
+      let newField = `
             <div class="phone-group mb-2 d-flex">
                 <input type="text" name="phone_label[]" class="form-control me-2" placeholder="Label (e.g., Personal, Emergency)">
                 <input type="text" name="phone_number[]" class="form-control me-2" placeholder="Enter phone">
                 <button type="button" class="btn btn-danger remove-phone">-</button>
             </div>
         `;
-        wrapper.insertAdjacentHTML('beforeend', newField);
+      wrapper.insertAdjacentHTML('beforeend', newField);
     });
 
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-phone')) {
-            e.target.parentElement.remove();
-        }
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('remove-phone')) {
+        e.target.parentElement.remove();
+      }
     });
-    });
+  });
 </script>

@@ -183,7 +183,7 @@
 
                 <div id="phone-container">
                   @php
-                  $oldLabels = old('phone_label', ['']); 
+                  $oldLabels = old('phone_label', ['']);
                   $oldNumbers = old('phone_number', ['']);
                   @endphp
 
@@ -251,7 +251,7 @@
             <div class="col-sm-12 col-lg-6">
               <div class="form-group">
                 <label for="cv">CV:</label>
-                <input type="file" name="cv" id="cv" class="form-control-file @error('cv') is-invalid @enderror" required>
+                <input type="file" name="cv" id="cv" class="form-control-file @error('cv') is-invalid @enderror">
               </div>
               @error('cv')
               <div class="alert alert-danger">{{ $message }}</div>
@@ -290,6 +290,25 @@
                   @endforeach
                 </select>
                 @error('employment_type_id')
+                <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+              </div>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-lg-6">
+              <div class="form-group">
+                <label for="reporting_to">Reporting To:</label>
+                <select id="reporting_to" class="form-control @error('reporting_to') is-invalid @enderror" name="reporting_to">
+                  <option value="">Choose...</option>
+                  @foreach($employees as $emp)
+                  <option value="{{ $emp->id }}" {{ old('reporting_to') == $emp->id ? 'selected' : '' }}>
+                    {{ $emp->name }}
+                  </option>
+                  @endforeach
+                </select>
+                @error('reporting_to')
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
               </div>

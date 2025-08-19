@@ -19,4 +19,8 @@ class EmployeeDetail extends Model
     {
         return $this->belongsTo(EmploymentType::class, 'employment_type_id');
     }
+    public function reportingTo()
+    {
+        return $this->belongsTo(Employee::class, 'reporting_to');
+    }
 }

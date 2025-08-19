@@ -35,6 +35,16 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-sm-12 col-lg-6">
+            <div class="form-group">
+              <label for="employee_id">Employee ID:</label>
+              <input type="text" name="employee_id" id="employee_id" class="form-control-plaintext" readonly
+                value="{{ $employee->employeeDetail->emp_id ?? $emp->id }}">
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <div class="mb-3">
@@ -146,6 +156,17 @@
                 value="{{ $employee->employeeDetail && $employee->employeeDetail->employmentType 
                 ? $employee->employeeDetail->employmentType->name 
                 : 'N/A' }}">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-lg-6">
+            <div class="form-group">
+              <label for="reporting_to">Reporting To:</label>
+              <input type="text" id="reporting_to"
+                class="form-control-plaintext" readonly
+                value="{{ ucfirst(optional($employee->employeeDetail->reportingTo)->name ?? 'N/A') }}">
+
             </div>
           </div>
         </div>

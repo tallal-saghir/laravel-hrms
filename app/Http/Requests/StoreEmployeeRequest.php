@@ -24,10 +24,9 @@ class StoreEmployeeRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $rules = [
             'name' => 'required',
             'email' => 'required|email:rfc,dns',
-            'password' => 'required|confirmed|min:8',
             'role_id' => 'required|exists:roles,id',
             'start_of_contract' => 'required',
             'end_of_contract' => 'nullable|after:start_of_contract',
@@ -41,12 +40,23 @@ class StoreEmployeeRequest extends FormRequest
             'phone_number' => 'required|array',
             'phone_number.*' => 'required|min:11|max:13',
             'address' => 'required',
-            'photo' => 'required|max:2000|image|mimes:jpg,png,jpeg',
-            'cv' => 'required|mimetypes:application/pdf|max:2000|file',
+            'cv' => 'nullable|mimetypes:application/pdf|max:2000|file',
             'work_experience_in_years' => 'required|integer|min:0|max:50',
             'marital_status' => 'required|in:single,married,divorced,widowed',
             'employment_type_id' => 'required|exists:employment_types,id',
+            'reporting_to' => 'nullable|exists:employees,id',
 
         ];
+        if ($this->isMethod('post')) {
+            $rules['password'] = 'required|confirmed|min:8';
+            $rules['photo'] = 'required|max:2000|image|mimes:jpg,png,jpeg';
+        }
+
+        if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules['password'] = 'nullable|confirmed|min:8';
+            $rules['photo'] = 'nullable|max:2000|image|mimes:jpg,png,jpeg';
+        }
+
+        return $rules;
     }
 }

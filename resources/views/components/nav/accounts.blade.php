@@ -9,4 +9,7 @@
     <li class="nav-item">
         <a href={{ route('roles') }} class="nav-link">Roles</a>
     </li>
+    <li class="nav-item">
+        <a href={{ route('employment-type') }} class="nav-link">Employment Type</a>
+    </li>
 </ul>

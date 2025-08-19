@@ -19,7 +19,7 @@ use App\Http\Controllers\ScoreCategoriesController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\EmploymentTypeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -127,5 +127,14 @@ Route::middleware('check.access')->group(function() {
     Route::put('/roles/{role}', [RolesController::class, 'update'])->name('roles.update');
     Route::delete('/roles/{role}', [RolesController::class, 'destroy'])->name('roles.destroy');
     Route::get('/profile', [ProfilesController::class, 'index'])->name('profile');
-    Route::put('/profile/{user}', [ProfilesController::class, 'update'])->name('profile.update');    
+    Route::put('/profile/{user}', [ProfilesController::class, 'update'])->name('profile.update'); 
+    
+    Route::get('/employment-type', [EmploymentTypeController::class, 'index'])->name('employment-type');
+    Route::get('/employment-type/create', [EmploymentTypeController::class, 'create'])->name('employment-type.create');
+    Route::get('/employment-type/print', [EmploymentTypeController::class, 'print'])->name('employment-type.print');
+    Route::get('/employment-type/{employmentType}', [EmploymentTypeController::class, 'show'])->name('employment-type.show');
+    Route::get('/employment-type/{employmentType}/edit', [EmploymentTypeController::class, 'edit'])->name('employment-type.edit');
+    Route::post('/employment-type', [EmploymentTypeController::class, 'store'])->name('employment-type.store');
+    Route::put('/employment-type/{employmentType}', [EmploymentTypeController::class, 'update'])->name('employment-type.update');
+    Route::delete('/employment-type/{employmentType}', [EmploymentTypeController::class, 'destroy'])->name('employment-type.destroy');
 });

@@ -51,8 +51,8 @@ class EmployeesController extends Controller
         $departments = resolve(Department::class)->get();
         $positions = resolve(Position::class)->get();
         $employmentTypes = EmploymentType::all();
-
-        return view('pages.employees-data_create', compact('roles', 'departments', 'positions', 'employmentTypes'));
+        $employees = Employee::with('employeeDetail')->get();
+        return view('pages.employees-data_create', compact('roles', 'departments', 'positions', 'employmentTypes', 'employees'));
     }
 
     /**
@@ -90,8 +90,14 @@ class EmployeesController extends Controller
                     'number' => $numbers[$i]
                 ];
             }
+
+            // Employee ID
+            $contractStart = str_replace('-', '', $request->input('start_of_contract'));
+            $uniqueNumber = str_pad($employee->id, 4, '0', STR_PAD_LEFT);
+
             EmployeeDetail::create([
                 'employee_id' => $employee->id,
+                'emp_id' => 'TEC-' . $contractStart . $uniqueNumber,
                 'identity_number' => $request->input('identity_number'),
                 'name' => $request->input('name'),
                 'gender' => $request->input('gender'),
@@ -100,10 +106,13 @@ class EmployeesController extends Controller
                 'phone' => json_encode($phones),
                 'address' => $request->input('address'),
                 'photo' => $request->file('photo')->store('photos', 'public'),
-                'cv' => $request->file('cv')->store('cvs', 'public'),
+                'cv' => $request->hasFile('cv')
+                    ? $request->file('cv')->store('cvs', 'public')
+                    : null,
                 'work_experience_in_years' => $request->input('work_experience_in_years'),
                 'marital_status' => $request->input('marital_status'),
                 'employment_type_id' => $request->input('employment_type_id'),
+                'reporting_to' => $request->input('reporting_to'),
             ]);
 
             EmployeeLeave::create([
@@ -143,7 +152,8 @@ class EmployeesController extends Controller
         $departments = resolve(Department::class)->get();
         $positions = resolve(Position::class)->get();
         $employmentTypes = EmploymentType::all();
-        return view('pages.employees-data_edit', compact('employee', 'roles', 'departments', 'positions', 'employmentTypes'));
+        $employees = Employee::with('employeeDetail')->get();
+        return view('pages.employees-data_edit', compact('employee', 'roles', 'departments', 'positions', 'employmentTypes', 'employees'));
     }
 
     /**
@@ -155,14 +165,17 @@ class EmployeesController extends Controller
      */
     public function update(StoreEmployeeRequest $request, Employee $employee)
     {
-        User::where('id', $request->input('user_id'))
-            ->update([
-                'name' => $request->input('name'),
-                'email' => $request->input('email'),
-                'password' => Hash::make($request->input('password')),
-                'role_id' => $request->input('role_id'),
-                'is_active' => $request->input('is_active'),
-            ]);
+        $userData = [
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'role_id' => $request->input('role_id'),
+            'is_active' => $request->input('is_active'),
+        ];
+        if ($request->filled('password')) {
+            $userData['password'] = Hash::make($request->input('password'));
+        }
+
+        User::where('id', $request->input('user_id'))->update($userData);
 
         Employee::where('id', $employee->id)
             ->update([
@@ -174,19 +187,20 @@ class EmployeesController extends Controller
                 'is_active' => $request->input('is_active'),
             ]);
 
-            $labels = $request->input('phone_label');
-            $numbers = $request->input('phone_number');
+        $labels = $request->input('phone_label');
+        $numbers = $request->input('phone_number');
 
-            $phones = [];
-            for ($i = 0; $i < count($labels); $i++) {
-                $phones[] = [
-                    'label' => $labels[$i],
-                    'number' => $numbers[$i]
-                ];
-            }
+        $phones = [];
+        for ($i = 0; $i < count($labels); $i++) {
+            $phones[] = [
+                'label' => $labels[$i],
+                'number' => $numbers[$i]
+            ];
+        }
 
-        EmployeeDetail::where('employee_id', $employee->id)
-            ->update([
+        $employeeDetail = EmployeeDetail::where('employee_id', $employee->id)->first();
+        if ($employeeDetail) {
+            $data = [
                 'identity_number' => $request->input('identity_number'),
                 'name' => $request->input('name'),
                 'gender' => $request->input('gender'),
@@ -194,12 +208,22 @@ class EmployeesController extends Controller
                 'email' => $request->input('email'),
                 'phone' => json_encode($phones),
                 'address' => $request->input('address'),
-                'photo' => $request->file('photo')->store('photos', 'public'),
-                'cv' => $request->file('cv')->store('cvs', 'public'),
                 'work_experience_in_years' => $request->input('work_experience_in_years'),
                 'marital_status' => $request->input('marital_status'),
                 'employment_type_id' => $request->input('employment_type_id'),
-            ]);
+                'reporting_to' => $request->input('reporting_to'),
+            ];
+
+            if ($request->hasFile('photo')) {
+                $data['photo'] = $request->file('photo')->store('photos', 'public');
+            }
+
+            if ($request->hasFile('cv')) {
+                $data['cv'] = $request->file('cv')->store('cvs', 'public');
+            }
+
+            $employeeDetail->update($data);
+        }
 
         Log::create([
             'description' => auth()->user()->employee->name . " updated an employee's detail named '" . $employee->name . "'"
