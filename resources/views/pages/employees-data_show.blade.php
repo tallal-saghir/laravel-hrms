@@ -4,11 +4,11 @@
 <div class="container-fluid mt-2 px-4">
   <div class="row">
     <div class="col-12">
-        <h4 class="font-weight-bold">Employees' Data</h4>
-        <hr>
+      <h4 class="font-weight-bold">Employees' Data</h4>
+      <hr>
     </div>
   </div>
-  
+
   <div class="row">
     <div class="col-12">
       <h5 class="text-center font-weight-bold mb-3">Employee's Detail</h5>
@@ -20,6 +20,7 @@
       <div class="mb-3">
         <h6 class="font-weight-bold">Account Information</h6>
         <hr>
+
         <div class="row">
           <div class="col-sm-12 col-lg-6">
             <div class="form-group">
@@ -34,8 +35,18 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="col-sm-12 col-lg-6">
+            <div class="form-group">
+              <label for="employee_id">Employee ID:</label>
+              <input type="text" name="employee_id" id="employee_id" class="form-control-plaintext" readonly
+                value="{{ $employee->employeeDetail->emp_id ?? $emp->id }}">
+            </div>
+          </div>
+
+        </div>
       </div>
-      
+
       <div class="mb-3">
         <h6 class="font-weight-bold">Employee Information</h6>
         <hr>
@@ -43,13 +54,13 @@
         <div class="row">
           <div class="col-sm-12 col-lg-6">
             <div class="form-group">
-              <label for="start_of_contract">Start of Contract:</label>
+              <label for="start_of_contract">Date of Joining:</label>
               <input type="date" name="start_of_contract" id="start_of_contract" class="form-control-plaintext" readonly value="{{ $employee->start_of_contract }}">
             </div>
           </div>
           <div class="col-sm-12 col-lg-6">
             <div class="form-group">
-              <label for="end_of_contract">End of Contract:</label>
+              <label for="end_of_contract">Date of Resigning:</label>
               <input type="date" name="end_of_contract" id="end_of_contract" class="form-control-plaintext" readonly value="{{ $employee->end_of_contract }}">
             </div>
           </div>
@@ -90,14 +101,25 @@
         <div class="row">
           <div class="col-sm-12 col-lg-6">
             <div class="form-group">
-              <label for="identity_number">Identity Number:</label>
+              <label for="identity_number">CNIC:</label>
               <input type="text" name="identity_number" id="identity_number" class="form-control-plaintext" readonly value="{{ $employee->employeeDetail->identity_number }}">
             </div>
           </div>
           <div class="col-sm-12 col-lg-6">
             <div class="form-group">
               <label for="phone">Phone:</label>
-              <input type="text" name="phone" id="phone" class="form-control-plaintext" readonly value="{{ $employee->employeeDetail->phone }}">
+              @php
+              $phones = json_decode($employee->employeeDetail->phone, true);
+              @endphp
+
+              @if(!empty($phones))
+              <ul>
+                @foreach($phones as $phone)
+                <li><strong>{{ $phone['label'] }}:</strong> {{ $phone['number'] }}</li>
+                @endforeach
+              </ul>
+              @endif
+
             </div>
           </div>
         </div>
@@ -109,24 +131,6 @@
               <input type="text" name="address" id="address" class="form-control-plaintext" readonly value="{{ $employee->employeeDetail->address }}">
             </div>
           </div>
-        </div>
-
-        <div class="row">
-          <div class="col-sm-12 col-lg-6">
-            <div class="form-group">
-              <label for="last_education">Last Education:</label>
-              <input type="text" name="last_education" id="last_education" class="form-control-plaintext" readonly value="{{ $employee->employeeDetail->last_education }}">
-            </div>
-          </div>
-          <div class="col-sm-12 col-lg-6">
-            <div class="form-group">
-              <label for="gpa">GPA:</label>
-              <input type="text" name="gpa" id="gpa" class="form-control-plaintext" readonly value="{{ $employee->employeeDetail->gpa }}">
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
           <div class="col-sm-12 col-lg-6">
             <div class="form-group">
               <label for="work_experience_in_years">Work Experience (in years):</label>
@@ -134,6 +138,40 @@
             </div>
           </div>
         </div>
+
+        <div class="row">
+          <div class="col-sm-12 col-lg-6">
+            <div class="form-group">
+              <label for="marital_status">Marital Status:</label>
+              <input type="text" id="marital_status"
+                class="form-control-plaintext" readonly
+                value="{{ ucfirst($employee->employeeDetail->marital_status) }}">
+            </div>
+          </div>
+          <div class="col-sm-12 col-lg-6">
+            <div class="form-group">
+              <label for="employment_type">Employment Type:</label>
+              <input type="text" id="employment_type"
+                class="form-control-plaintext" readonly
+                value="{{ $employee->employeeDetail && $employee->employeeDetail->employmentType 
+                ? $employee->employeeDetail->employmentType->name 
+                : 'N/A' }}">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12 col-lg-6">
+            <div class="form-group">
+              <label for="reporting_to">Reporting To:</label>
+              <input type="text" id="reporting_to"
+                class="form-control-plaintext" readonly
+                value="{{ ucfirst(optional($employee->employeeDetail->reportingTo)->name ?? 'N/A') }}">
+
+            </div>
+          </div>
+        </div>
+
+
       </div>
     </div>
 
@@ -155,18 +193,18 @@
   </div>
 
   @if (collect($accesses)->where('menu_id', 2)->first()->status == 2)
-    <div class="row">
-      <div class="col-12">
-        <form action="{{ route('employees-data.edit', ['employee' => $employee->id]) }}" class="d-inline-block">
-          <button type="submit" class="btn btn-warning mr-2 px-5">Edit</button>
-        </form>
-        <form action="{{ route('employees-data.destroy', ['employee' => $employee->id]) }}" method="POST" class="d-inline-block">
-          @csrf
-          @method('DELETE')
-          <button type="submit" class="btn btn-danger mr-2 px-5" onclick="return confirm('Are you sure deleting this employee?')">Delete</button>
-        </form>
-      </div>
+  <div class="row">
+    <div class="col-12">
+      <form action="{{ route('employees-data.edit', ['employee' => $employee->id]) }}" class="d-inline-block">
+        <button type="submit" class="btn btn-warning mr-2 px-5">Edit</button>
+      </form>
+      <form action="{{ route('employees-data.destroy', ['employee' => $employee->id]) }}" method="POST" class="d-inline-block">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-danger mr-2 px-5" onclick="return confirm('Are you sure deleting this employee?')">Delete</button>
+      </form>
     </div>
+  </div>
   @endif
 </div>
 @endsection

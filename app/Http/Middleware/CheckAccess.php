@@ -22,7 +22,7 @@ class CheckAccess
 
         if(in_array($name, array('employees-data', 'departments-data', 'positions-data'))){
             $name = "data";
-        } else if (in_array($name, array('users', 'roles'))) {
+        } else if (in_array($name, array('users', 'roles','employment-type'))) {
             $name = "accounts";
         } else if ($name == "profile") {
             $name = "user";

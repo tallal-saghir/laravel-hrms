@@ -11,7 +11,16 @@ class EmployeeDetail extends Model
 
     protected $guarded = [];
 
-    public function employee() {
+    public function employee()
+    {
         return $this->belongsTo(Employee::class);
+    }
+    public function employmentType()
+    {
+        return $this->belongsTo(EmploymentType::class, 'employment_type_id');
+    }
+    public function reportingTo()
+    {
+        return $this->belongsTo(Employee::class, 'reporting_to');
     }
 }

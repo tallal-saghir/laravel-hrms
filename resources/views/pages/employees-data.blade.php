@@ -36,8 +36,8 @@
               <th scope="col" class="table-dark">Name</th>
               <th scope="col" class="table-dark">Position</th>
               <th scope="col" class="table-dark">Department</th>
-              <th scope="col" class="table-dark">Start of Contract</th>
-              <th scope="col" class="table-dark">End of Contract</th>
+              <th scope="col" class="table-dark">Date of Joining</th>
+              <th scope="col" class="table-dark">Date of Resigning</th>
             </tr>
           </thead>
           <tbody>
