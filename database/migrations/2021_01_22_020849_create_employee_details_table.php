@@ -24,7 +24,7 @@ class CreateEmployeeDetailsTable extends Migration
             $table->string('phone');
             $table->string('address');
             $table->string('photo');
-            $table->string('cv');
+            $table->string('cv')->nullable();
             $table->string('last_education');
             $table->string('gpa');
             $table->integer('work_experience_in_years');
